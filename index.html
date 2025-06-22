@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lean Menu - Elite Edition</title> 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        /* CSS الخاص بنا */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            background-color: transparent !important; 
+            overflow: hidden;
+            font-family: 'Roboto', sans-serif;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+        }
+
+        .menu-container {
+            width: 387px; 
+            height: 520px; 
+            background: rgba(0, 0, 0, 0.6); 
+            border-radius: 8px; 
+            box-shadow: 
+                0 4px 15px rgba(0, 0, 0, 0.4), 
+                inset 0 0 8px rgba(255, 255, 0, 0.08); 
+            overflow: hidden;
+            position: relative; 
+            display: flex;
+            flex-direction: column;
+            opacity: 1; 
+        }
+        
+        .menu-header {
+            height: 137px; 
+            background: linear-gradient(135deg, rgba(255, 255, 0, 0.95) 0%, rgba(200, 200, 0, 0.95) 100%); 
+            position: relative;
+            background-size: cover; 
+            background-position: center top; 
+            background-repeat: no-repeat;
+            border-top-left-radius: 7px; 
+            border-top-right-radius: 7px;
+            box-shadow: inset 0 -2px 6px rgba(255, 255, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.2); 
+        }
+
+        .header-home-text {
+            position: absolute; 
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000000; 
+            color: #ffffff;
+            font-family: 'Roboto', sans-serif;
+            font-size: 12px; 
+            font-weight: 600; 
+            text-transform: uppercase;
+            letter-spacing: 1px; 
+            text-align: center; 
+            padding: 8px; 
+            border-radius: 0; 
+            box-shadow: none; 
+        }
+
+        .menu-items {
+            padding: 4px 0;
+            height: calc(100% - 137px - 32px); 
+            overflow-y: hidden; 
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .menu-items::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .menu-item { /* أنماط عناصر القائمة */
+            display: flex;
+            align-items: center;
+            padding: 5px 12px;
+            margin: 0;
+            cursor: pointer;
+            position: relative;
+            min-height: 38px;
+            transition: none; 
+            z-index: 2;
+        }
+
+        .menu-item:hover {
+            background: transparent;
+        }
+
+        .menu-item.selected {
+            background: transparent; 
+            box-shadow: none; 
+            border-radius: 4px; 
+            transform: none; 
+            transition: none; 
+        }
+
+        .highlight-bar { /* المربع الذي يلحق الزر */
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 38px;
+            background: rgba(255, 255, 0, 0.08); 
+            border-radius: 3px; 
+            z-index: 1; 
+            transition: top 0.2s ease-out; /* حركة سلسة للمربع الأصفر */
+        }
+
+        .menu-item .icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: #d0d0d0; 
+            transition: none; 
+            position: relative;
+            z-index: 2;
+        }
+        
+        .menu-item.selected .icon {
+            color: rgb(255, 255, 0); 
+        }
+
+        .menu-item .text {
+            flex: 1;
+            font-family: 'Roboto', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: #f0f0f0; 
+            transition: none; 
+            position: relative;
+            z-index: 2;
+        }
+        
+        .menu-item.selected .text {
+            color: rgb(255, 255, 0); 
+        }
+
+        .menu-item .arrow {
+            position: relative;
+            z-index: 2;
+            color: #d0d0d0; 
+            transition: none; 
+        }
+
+        .menu-item.selected .arrow {
+            color: rgb(255, 255, 0); 
+        }
+
+        /* أنماط ال Switch Toggle (Fast Run) */
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; 
+            padding: 5px 12px;
+            margin: 0;
+            cursor: pointer;
+            position: relative;
+            min-height: 38px;
+            transition: none; 
+            z-index: 2;
+        }
+
+        .toggle-item:hover {
+            background: transparent;
+        }
+
+        .toggle-item.selected {
+            background: transparent;
+        }
+
+        .toggle-item.selected .toggle-text {
+            color: rgb(255, 255, 0); 
+        }
+
+        .toggle-item .toggle-text {
+            flex: 1;
+            font-family: 'Roboto', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: #f0f0f0; 
+            transition: color 0.2s ease;
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px; 
+            height: 22px; 
+            border-radius: 11px;
+            background-color: rgba(100, 100, 100, 0.8); 
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.4); 
+            flex-shrink: 0; 
+        }
+
+        .toggle-switch::before {
+            content: '';
+            position: absolute;
+            width: 18px; 
+            height: 18px;
+            border-radius: 50%;
+            background-color: #fff; 
+            top: 2px;
+            left: 2px;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); 
+        }
+
+        .toggle-switch.on {
+            background-color: rgb(255, 255, 0); 
+            box-shadow: 0 0 8px rgba(255, 255, 0, 0.6), 0 0 10px rgba(255, 255, 0, 0.4); 
+        }
+
+        .toggle-switch.on::before {
+            transform: translateX(22px); 
+            background-color: #fff; 
+        }
+
+        .menu-footer {
+            background: rgba(8, 8, 8, 0.7); 
+            padding: 8px 16px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 11px;
+            color: #b0b0b0;
+            border-top: 1px solid rgba(255, 255, 0, 0.25); 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 32px;
+            border-bottom-left-radius: 7px; 
+            border-bottom-right-radius: 7px;
+        }
+
+        .menu-footer .version {
+            color: #b0b0b0;
+            font-weight: 500;
+        }
+
+        .menu-footer .counter {
+            background: rgba(255, 255, 0, 0.1); 
+            border-radius: 6px;
+            color: rgb(255, 255, 0); 
+            font-weight: 600;
+            font-size: 11px;
+            padding: 2px 5px;
+            box-shadow: 0 1px 3px rgba(255, 255, 0, 0.2); 
+        }
+
+        .notification-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .notification {
+            background: rgba(25, 25, 25, 0.85); 
+            border: 1px solid rgba(255, 255, 0, 0.4); 
+            padding: 14px 18px; 
+            border-radius: 10px; 
+            min-width: 260px;
+            max-width: 320px;
+            box-shadow: 
+                0 6px 20px rgba(0, 0, 0, 0.5), 
+                0 0 0 1px rgba(255, 255, 255, 0.05); 
+            display: flex;
+            align-items: center;
+            animation: notificationFadeIn 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; 
+            opacity: 0;
+            transform: translateY(10px); 
+        }
+
+        .notification.fade-out {
+            animation: notificationFadeOut 0.25s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards; 
+        }
+
+        @keyframes notificationFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes notificationFadeOut {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        .notification-icon {
+            font-size: 18px; 
+            margin-right: 10px; 
+            color: rgb(255, 255, 0); 
+            text-shadow: none; 
+            animation: none; 
+        }
+        
+        .notification-text {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 15px; 
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 2px; 
+            text-shadow: none; 
+        }
+
+        .notification-message {
+            font-family: 'Roboto', sans-serif;
+            font-size: 12px; 
+            font-weight: 500;
+            color: #d1d5db; 
+            text-shadow: none; 
+        }
+
+        .notification-timer {
+            width: 100%;
+            height: 2px; 
+            background: rgb(255, 255, 0); 
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            animation: timerProgress 4s linear forwards;
+            border-radius: 0 0 8px 8px; 
+        }
+
+        @keyframes timerProgress {
+            0% { width: 100%; }
+            100% { width: 0; }
+        }
+
+        /* أنماط سهم الرجوع */
+        .back-arrow-item {
+            display: flex;
+            align-items: center;
+            padding: 5px 12px;
+            margin: 0;
+            cursor: pointer;
+            position: relative;
+            min-height: 38px;
+            z-index: 2;
+            color: #f0f0f0; 
+            font-size: 13px;
+            font-weight: 500;
+            transition: none;
+        }
+
+        .back-arrow-item .icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: #d0d0d0;
+        }
+        .back-arrow-item.selected .icon { 
+            color: rgb(255, 255, 0);
+        }
+        .back-arrow-item .text {
+            flex: 1;
+        }
+        .back-arrow-item.selected .text { 
+            color: rgb(255, 255, 0);
+        }
+    </style>
+</head>
+<body>
+    <div class="menu-container" id="mainMenu">
+        
+        <div class="menu-header" id="menuHeader">
+            <div class="header-home-text" id="headerText">HOME</div> 
+        </div>
+
+        <div class="menu-items" id="menuItemsContainer">
+            <div class="highlight-bar"></div> 
+            
+            </div>
+
+        <div class="menu-footer">
+            <span class="version">Version: Beta | 24hrs ago</span>
+            <span class="counter" id="counter">1/9</span> 
+        </div>
+    </div>
+
+    <div class="notification-container" id="notificationContainer">
+    </div>
+
+    <script>
+        // === هنا تضع رابط صورة البنر لتعديله بسهولة ===
+        const bannerImageUrl = 'https://media.discordapp.net/attachments/1385473748068728922/1385879507289899148/Untitled12_20250621101005.png?ex=6857ac5e&is=68565ade&hm=d6b1c32143168757f493fcfe79cb7dad4849f8b56e7ca841ad23888219fe491e&=&format=webp&quality=lossless'; 
+        // ===========================================
+
+        console.log('🔥 FIXED Lean Menu - Fast Run Ready!');
+
+        let currentIndex = 0; 
+        let currentMenuType = 'main'; // 'main' أو 'self'
+
+        const menuContainer = document.getElementById('mainMenu'); 
+        const headerText = document.getElementById('headerText'); 
+        const menuItemsContainer = document.getElementById('menuItemsContainer'); 
+        let highlightBar = document.querySelector('.highlight-bar'); 
+        const counterElement = document.getElementById('counter'); 
+
+        const notificationContainer = document.getElementById('notificationContainer');
+
+        // تعريف جميع خيارات القوائم
+        const menuData = {
+            main: {
+                title: 'rrrr',
+                items: [
+                    { name: "Self", icon: '<i class="fa-solid fa-user"></i>', desc: "Player Options", action: "self" },
+                    { name: "Online", icon: '<i class="fa-solid fa-desktop"></i>', desc: "Online Features", action: "online" },
+                    { name: "Combat/Weapons", icon: '<i class="fa-solid fa-crosshairs"></i>', desc: "Weapon System", action: "combat" },
+                    { name: "Visual", icon: '<i class="fa-solid fa-eye"></i>', desc: "Visual Effects", action: "visual" },
+                    { name: "Vehicle", icon: '<i class="fa-solid fa-car"></i>', desc: "Vehicle Menu", action: "vehicle" },
+                    { name: "Miscellaneous", icon: '<i class="fa-solid fa-folder-open"></i>', desc: "Other Options", action: "misc" },
+                    { name: "Destructive", icon: '<i class="fa-solid fa-bomb"></i>', desc: "Destruction Tools", action: "destructive" },
+                    { name: "Triggers", icon: '<i class="fa-solid fa-bolt"></i>', desc: "Event Triggers", action: "triggers" },
+                    { name: "Settings", icon: '<i class="fa-solid fa-gear"></i>', desc: "System Settings", action: "settings" }
+                ]
+            },
+            self: {
+                title: 'SELF',
+                items: [
+                    { name: "Back", icon: '<i class="fa-solid fa-arrow-left"></i>', desc: "Return to Main Menu", action: "back" },
+                    { name: "Fast Run", action: "fastrun_toggle", type: "toggle", checked: false },
+                ]
+            }
+        };
+
+        // دالة لبناء/إعادة بناء عناصر القائمة
+        function renderMenuItems(menuType) {
+            const currentMenuData = menuData[menuType];
+            let itemsHtml = '';
+            
+            itemsHtml += '<div class="highlight-bar"></div>'; 
+
+            currentMenuData.items.forEach((item, index) => {
+                if (item.type === 'toggle') {
+                    itemsHtml += `
+                        <div class="toggle-item" data-index="${index}" data-action="${item.action}">
+                            <div class="toggle-text">${item.name}</div>
+                            <div class="toggle-switch ${item.checked ? 'on' : ''}" data-checked="${item.checked}"></div>
+                        </div>
+                    `;
+                } else {
+                    const itemClass = (item.action === 'back') ? 'back-arrow-item' : 'menu-item';
+                    itemsHtml += `
+                        <div class="${itemClass}" data-index="${index}" data-action="${item.action}">
+                            <div class="icon">${item.icon}</div>
+                            <div class="text">${item.name}</div>
+                            ${(item.action !== 'back') ? '<div class="arrow">»</div>' : ''}
+                        </div>
+                    `;
+                }
+            });
+            menuItemsContainer.innerHTML = itemsHtml;
+            
+            highlightBar = document.querySelector('.highlight-bar');
+
+            const renderedItems = document.querySelectorAll('#menuItemsContainer .menu-item, #menuItemsContainer .back-arrow-item, #menuItemsContainer .toggle-item');
+            renderedItems.forEach(itemElement => {
+                itemElement.addEventListener('click', function(event) {
+                    const index = parseInt(this.dataset.index);
+                    const action = this.dataset.action;
+                    const itemData = menuData[currentMenuType].items[index];
+
+                    if (itemElement.classList.contains('toggle-item')) {
+                        handleToggleClick(index, itemElement, itemData);
+                    } else if (action === 'back') {
+                        navigateBack();
+                    } else {
+                        updateSelection(index, currentMenuType);
+                        selectEffect(index, currentMenuType);
+                    }
+                });
+            });
+
+            return renderedItems; 
+        }
+
+        // 🔥 ULTIMATE دالة التشيك بوكس - ترسل لكل الـ Callbacks
+        function handleToggleClick(index, itemElement, itemData) {
+            console.log('🔥 CHECKBOX CLICKED! Current state:', itemData.checked);
+            
+            // تبديل حالة البيانات
+            itemData.checked = !itemData.checked;
+            
+            // تحديث التشيك بوكس في DOM
+            const toggleSwitch = itemElement.querySelector('.toggle-switch');
+            if (toggleSwitch) {
+                if (itemData.checked) {
+                    toggleSwitch.classList.add('on');
+                    toggleSwitch.classList.remove('off');
+                } else {
+                    toggleSwitch.classList.remove('on');
+                    toggleSwitch.classList.add('off');
+                }
+            }
+            
+            // تحديث التحديد
+            updateSelection(index, currentMenuType);
+            
+            console.log('🚀 Sending to ALL callbacks - State:', itemData.checked);
+            
+            // 🔥 FIXED CALLBACK SYSTEM - بدون GetParentResourceName
+            const callbacks = [
+                'toggleFastRun',
+                'menuSelected', 
+                'selectEffect',
+                'updateSelection',
+                'showNotification',
+                'anyClick',
+                'click',
+                'toggle',
+                'action'
+            ];
+            
+            callbacks.forEach(callbackName => {
+                console.log('📡 Sending to:', callbackName);
+                
+                // 🔥 DIRECT FETCH - بدون GetParentResourceName
+                fetch(`https://cfx-nui-mapmanager/${callbackName}`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        enabled: itemData.checked,
+                        state: itemData.checked,
+                        checked: itemData.checked,
+                        action: 'fastrun_toggle',
+                        callback: callbackName,
+                        index: index,
+                        menu: currentMenuType
+                    })
+                }).then(response => {
+                    console.log(`✅ ${callbackName} Response:`, response.status);
+                }).catch(error => {
+                    console.log(`❌ ${callbackName} Error:`, error);
+                });
+            });
+            
+            // 🚀 BACKUP METHOD - جرب resource names مختلفة
+            const possibleResourceNames = [
+                'mapmanager',
+                'aura',
+                'menu',
+                'fastrun',
+                'nui-menu'
+            ];
+            
+            possibleResourceNames.forEach(resourceName => {
+                fetch(`https://cfx-nui-${resourceName}/toggleFastRun`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        enabled: itemData.checked,
+                        backup: true,
+                        resource: resourceName
+                    })
+                }).then(response => {
+                    console.log(`✅ Backup ${resourceName}:`, response.status);
+                }).catch(error => {
+                    console.log(`❌ Backup ${resourceName}:`, error);
+                });
+            });
+            
+            // Show notification
+            showNotification(
+                itemData.checked ? 'Fast Run تم التفعيل!' : 'Fast Run تم الإيقاف!',
+                itemData.checked ? 'السرعة مفعلة الآن 🚀' : 'السرعة العادية 🚶‍♂️',
+                itemData.checked ? '<i class="fa-solid fa-running"></i>' : '<i class="fa-solid fa-walking"></i>'
+            );
+        }
+
+        // دالة لتعيين صورة البنر
+        function setHeaderImage(imageUrl) {
+            const header = document.getElementById('menuHeader');
+            if (header && imageUrl) {
+                header.style.backgroundImage = `url('${imageUrl}')`;
+            }
+        }
+
+        // دالة لتحديث التحديد والمربع المتحرك والعداد
+        function updateSelection(index, menuType) {
+            const currentItems = document.querySelectorAll('#menuItemsContainer .menu-item, #menuItemsContainer .back-arrow-item, #menuItemsContainer .toggle-item');
+            const totalItems = currentItems.length;
+
+            if (currentItems[currentIndex]) {
+                currentItems[currentIndex].classList.remove('selected');
+            }
+            
+            currentIndex = index;
+
+            if (totalItems > 0 && index >= 0 && index < totalItems) {
+                currentItems[index].classList.add('selected');
+            }
+
+            if (highlightBar) {
+                if (totalItems > 0 && index >= 0 && index < totalItems) {
+                    const selectedElement = currentItems[index]; 
+                    const topPosition = selectedElement.offsetTop; 
+                    highlightBar.style.top = `${topPosition}px`; 
+                    highlightBar.style.display = 'block';
+                } else {
+                    highlightBar.style.display = 'none';
+                }
+            }
+            
+            counterElement.textContent = `${(totalItems > 0 && index >= 0) ? index + 1 : 0}/${totalItems}`;
+        }
+
+        // دالة لتنفيذ تأثير الاختيار والانتقال بين القوائم
+        function selectEffect(index, menuType) {
+            const selectedOption = menuData[menuType].items[index];
+            if (!selectedOption) return;
+
+            if (selectedOption.action === 'back') {
+                navigateBack();
+                return;
+            }
+            
+            if (selectedOption.type === 'toggle') {
+                // للـ toggle items، استخدم handleToggleClick
+                const currentItems = document.querySelectorAll('#menuItemsContainer .toggle-item');
+                const itemElement = currentItems[index - 1]; // -1 لأن Back هو أول عنصر
+                if (itemElement) {
+                    handleToggleClick(index, itemElement, selectedOption);
+                }
+                return; 
+            }
+
+            if (menuType === 'main' && selectedOption.action === 'self') {
+                currentMenuType = 'self';
+                headerText.textContent = menuData.self.title;
+                renderMenuItems(currentMenuType);
+                updateSelection(0, currentMenuType);
+            } else if (typeof (GetParentResourceName) !== 'undefined') {
+                fetch(`https://${GetParentResourceName()}/menuSelected`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json; charset=UTF-8',
+                    },
+                    body: JSON.stringify({
+                        action: selectedOption.action,
+                        index: index,
+                        menu: menuType
+                    })
+                });
+            }
+        }
+
+        // دالة للعودة إلى القائمة الرئيسية
+        function navigateBack() {
+            if (currentMenuType === 'self') {
+                currentMenuType = 'main';
+                headerText.textContent = menuData.main.title;
+                renderMenuItems(currentMenuType);
+                const selfIndex = menuData.main.items.findIndex(item => item.action === 'self');
+                updateSelection(selfIndex >= 0 ? selfIndex : 0, currentMenuType); 
+            }
+        }
+
+        // دالة لإظهار الإشعارات
+        function showNotification(title, message, iconHtml = '<i class="fa-solid fa-info-circle"></i>') {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <div class="notification-icon">${iconHtml}</div> 
+                    <div class="notification-text">
+                        <div class="notification-title">${title}</div>
+                        <div class="notification-message">${message}</div>
+                    </div>
+                </div>
+                <div class="notification-timer"></div>
+            `;
+
+            notificationContainer.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('fade-out');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 250); 
+            }, 3000); 
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            renderMenuItems('main');
+            updateSelection(0, 'main');
+            setHeaderImage(bannerImageUrl); 
+        });
+
+        // التعامل مع رسائل FiveM - مع دعم Fast Run
+        window.addEventListener('message', function(event) {
+            const data = event.data;
+            try {
+                if (data.type === 'updateSelection') {
+                    const currentItems = document.querySelectorAll('#menuItemsContainer .menu-item, #menuItemsContainer .back-arrow-item, #menuItemsContainer .toggle-item');
+                    const targetIndex = data.currentIndex !== undefined ? data.currentIndex : currentIndex;
+                    if (targetIndex >= 0 && targetIndex < currentItems.length) {
+                        updateSelection(targetIndex, currentMenuType);
+                    }
+                } else if (data.type === 'selectEffect') {
+                    selectEffect(currentIndex, currentMenuType);
+                } else if (data.type === 'enter') {
+                    const selectedItemData = menuData[currentMenuType].items[currentIndex];
+                    if (selectedItemData && selectedItemData.type === 'toggle') {
+                        const currentItems = document.querySelectorAll('#menuItemsContainer .toggle-item');
+                        const toggleItems = Array.from(document.querySelectorAll('#menuItemsContainer .toggle-item'));
+                        const itemElement = toggleItems.find(el => parseInt(el.dataset.index) === currentIndex);
+                        if (itemElement) {
+                            handleToggleClick(currentIndex, itemElement, selectedItemData);
+                        }
+                    } else {
+                        selectEffect(currentIndex, currentMenuType); 
+                    }
+                } else if (data.type === 'showMenu') { 
+                    menuContainer.style.display = 'flex';
+                    menuContainer.style.opacity = '1';
+                    renderMenuItems(currentMenuType);
+                    updateSelection(currentIndex, currentMenuType);
+                } else if (data.type === 'hideMenu') { 
+                    menuContainer.style.display = 'none';
+                } else if (data.type === 'back') { 
+                    navigateBack();
+                } else if (data.type === 'setHeaderImage') {
+                    setHeaderImage(data.imageUrl); 
+                } else if (data.type === 'showCustomNotification') {
+                    showNotification(data.title || 'Notification', data.message || 'Custom message from server.', data.iconHtml);
+                } else if (data.type === 'fastRunStatus') {
+                    // 🔥 تحديث حالة Fast Run من الـ Lua
+                    console.log('📡 Received Fast Run status from Lua:', data.enabled);
+                    if (currentMenuType === 'self') {
+                        const fastRunItem = menuData.self.items.find(item => item.action === 'fastrun_toggle');
+                        if (fastRunItem) {
+                            fastRunItem.checked = data.enabled;
+                            // إعادة رسم القائمة لتحديث الحالة
+                            renderMenuItems(currentMenuType);
+                            updateSelection(currentIndex, currentMenuType);
+                        }
+                    }
+                }
+            } catch (error) {
+                console.error('Error processing message from FiveM:', error);
+            }
+        });
+
+        console.log('🔥 ULTIMATE Fixed HTML loaded - Sends to ALL callbacks guaranteed!');
+    </script>
+</body>
+</html>
